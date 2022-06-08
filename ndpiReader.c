@@ -2700,17 +2700,17 @@ static void printFlowsStats() {
 			HASH_FIND_STR(hostsHashT, all_flows[i].flow->host_server_name, hostFound);
 
 			if(hostFound == NULL){
-				struct hash_stats *newHost = (struct hash_stats*)malloc(sizeof(hash_stats));
+				struct hash_stats *newHost = (struct hash_stats*)ndpi_malloc(sizeof(hash_stats));
 			      	newHost->domain_name = all_flows[i].flow->host_server_name;
 				newHost->occurency = 1;
 				    
-				if ((size_table = HASH_COUNT(hostsHashT)==len_table_max)){
+				if ((size_table = HASH_COUNT(hostsHashT)) == len_table_max) {
 				  int i=0;
 				  while (i<=toDelete){
 					
 				    HASH_ITER(hh, hostsHashT, host_iter, tmp4){
 				      HASH_DEL(hostsHashT,host_iter);
-				      free(host_iter);
+				      ndpi_free(host_iter);
 				      i++;		
 				    }	
 				  }
@@ -2734,17 +2734,17 @@ static void printFlowsStats() {
 		  	HASH_FIND_STR(hostsHashT, all_flows[i].flow->ssh_tls.server_info, hostFound);
 
 		  	if(hostFound == NULL){
-		    		struct hash_stats *newHost = (struct hash_stats*)malloc(sizeof(hash_stats));
+		    		struct hash_stats *newHost = (struct hash_stats*)ndpi_malloc(sizeof(hash_stats));
 	      	    		newHost->domain_name = all_flows[i].flow->ssh_tls.server_info;
 		    		newHost->occurency = 1;
 	    
-	    			if ((size_table = HASH_COUNT(hostsHashT)==len_table_max)){
+	    			if ((size_table = HASH_COUNT(hostsHashT)) == len_table_max) {
 				  int i=0;
 				  while (i<toDelete){
 		
 				    HASH_ITER(hh, hostsHashT, host_iter, tmp5){
 			 	     HASH_DEL(hostsHashT,host_iter);
-			  	    free(host_iter);
+			  	    ndpi_free(host_iter);
 			   	   i++;		
 			 	   }
 				  }	
@@ -2768,20 +2768,23 @@ static void printFlowsStats() {
       	//print the element of the hash table
    	int j;
    	int diff;
+   	printf("%s","Most seen Hostnames/SNIs\n");
+   	printf("\n");
 	HASH_ITER(hh, hostsHashT, host_iter, tmp6){
 		
-		printf("%s", host_iter->domain_name);
+		printf("\t%s", host_iter->domain_name);
 		//to print the occurency in aligned column	    	
 		diff = len_max-strlen(host_iter->domain_name);
 	    	for (j = 0; j <= diff+5;j++)
 	    		printf (" ");
 	    	printf("%d\n",host_iter->occurency);
+	    	printf("%s","\n\n");
 	}
 
 	//freeing the hash table
 	HASH_ITER(hh, hostsHashT, host_iter, tmp7){
 	   HASH_DEL(hostsHashT, host_iter);
-	   free(host_iter);
+	   ndpi_free(host_iter);
 	}
 	    
     	}	      
